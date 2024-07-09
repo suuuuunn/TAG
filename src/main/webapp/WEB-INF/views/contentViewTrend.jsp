@@ -459,9 +459,16 @@
 						<%
 							int usernum = (int) session.getAttribute("usernum");
 						%>
-						<button class="btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
-							<i class="bi bi-heart" style="color: red;"></i>&nbsp;${vo.lnum}
-						</button>
+						<c:if test="${tlikeflag == 0}">
+							<button class="btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
+								<i class="bi bi-heart" style="color: red;"></i>&nbsp;${vo.lnum}
+							</button>
+						</c:if>
+						<c:if test="${tlikeflag == 1}">
+							<button class="btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
+								<i class="bi bi-heart-fill" style="color: red"></i>&nbsp;${vo.lnum}
+							</button>
+						</c:if>
 					</c:if>
 					&nbsp;&nbsp;&nbsp;
 					<!-- 로그인 되어있지 않은 경우 -->
@@ -587,9 +594,14 @@
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
-																<button class="btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
 																</button>
+																<%-- <c:if test="${clikeflag == 1}">
+																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button>
+																</c:if> --%>
 															</c:if>
 															<!-- 로그인 되어있는 경우에만 신고-->
 															<c:if test="<%=nickname != null %>">
@@ -651,6 +663,11 @@
 																<button class="btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
 																</button>
+																<%-- <c:if test="${clikeflag == 1}">
+																	<button class="btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button>
+																</c:if> --%>
 															</c:if>
 															<!-- 로그인 되어있는 경우에만 신고-->
 															<c:if test="<%=nickname != null %>">

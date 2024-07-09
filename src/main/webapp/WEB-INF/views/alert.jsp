@@ -28,8 +28,16 @@
 	} else if (msg == '스크랩완료') {
 		alert(msg);
 		location.href = history.go(-1);
+		<% 
+			int scrapflag = 1;
+			request.setAttribute("scrapflag", scrapflag);
+		%>
 	} else if (msg == '스크랩취소') {
 		alert(msg);
 		location.href = history.go(-1);
+		<% 
+			scrapflag = 0;
+			request.setAttribute("scrapflag", scrapflag);
+		%>
 	}
 </script>
