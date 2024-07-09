@@ -231,8 +231,8 @@
 	<!-- ================================== +형빈 =================================== -->
      <!-- 회원정보 insert -->
 	<insert id="SignUp" parameterType="vo">
-		insert into USERINFO(nickname,usernum,userid,pw,email,birth,jdate,bookmark,point)
-		values (#{nickname},10000+(userNum_seq.nextval),#{userid},#{pw},#{email},#{birth},#{jdate},'','0')
+		insert into USERINFO(nickname,usernum,userid,pw,email,birth,jdate,point)
+		values (#{nickname},userNum_seq.nextval,#{userid},#{pw},#{email},#{birth},#{jdate},'0')
 	</insert>
 
 	<!-- 닉네임 중복 체크 -->

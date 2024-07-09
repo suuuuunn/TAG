@@ -263,24 +263,21 @@ public class HomeController {
 		int tnum = Integer.parseInt(request.getParameter("tnum"));
 		TrendVO vo = mapper.selectByTnum(tnum);
 		int totalComment = mapper.selectCountComment(tnum);
-		int usernum = (int) session.getAttribute("usernum");
+		int usernum;
+		try {
+			usernum = (int) session.getAttribute("usernum");
+		} catch (Exception e) { 
+			usernum = 0;
+		}
+		int tlikeflag = 0;
 		HashMap<String, Integer> hmap3 = new HashMap<String, Integer>();
 		hmap3.put("tnum", tnum);
 		hmap3.put("usernum", usernum);
 		try {
-			int tlikeflag = mapper.tlike(hmap3);
-			// System.out.println("tlikeflag: " + tlikeflag);
-			model.addAttribute("tlikeflag", tlikeflag);
+			tlikeflag = (int) model.getAttribute("tlikeflag");
+			System.out.println("tlikeflag: " + tlikeflag);
 		} catch (Exception e) {
-			int tlikeflag = 0;
-			model.addAttribute("tlikeflag", tlikeflag);
-		}
-		try {
-			int clikeflag = (int) model.getAttribute("clikeflag");
-			model.addAttribute("clikeflag", clikeflag);
-		} catch (Exception e) {
-			int clikeflag = 0;
-			model.addAttribute("clikeflag", clikeflag);
+			tlikeflag = 0;
 		}
 		
 		// 댓글 리스트
@@ -301,6 +298,7 @@ public class HomeController {
 		model.addAttribute("vo", vo);
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("trendList", trendList);
+		model.addAttribute("tlikeflag", tlikeflag);
 		return "contentViewTrend";
 	}
 	
@@ -439,33 +437,32 @@ public class HomeController {
 		System.out.println("usernum: " + usernum);
 		int tlikefirst = mapper.tlikefirst(hmap);
 		System.out.println("tlikefirst: " + tlikefirst);
+		int tlikeflag = 0;
 		if (tlikefirst == 0) {
 			mapper.insertTrendLike(hmap);
 			mapper.tilkeInsert(hmap);
-			int tlikeflag = mapper.tlike(hmap);
+			tlikeflag = mapper.tlike(hmap);
 			model.addAttribute("tlikeflag", tlikeflag);
-			System.out.println("tlikeflag: " + tlikeflag);
 		} else if (tlikefirst != 0) {
 			int tlike = mapper.tlike(hmap);
 			if (tlike == 0) {
 				mapper.insertTrendLike(hmap);
 				mapper.tlikeUpdate(hmap);
-				int tlikeflag = mapper.tlike(hmap);
+				tlikeflag = mapper.tlike(hmap);
 				model.addAttribute("tlikeflag", tlikeflag);
-				System.out.println("tlikeflag: " + tlikeflag);
 			} else if (tlike > 0) {
 				mapper.deleteTrendLike(hmap);
 				mapper.tlikeDelete(hmap);
-				int tlikeflag = mapper.tlike(hmap);
+				tlikeflag = mapper.tlike(hmap);
 				model.addAttribute("tlikeflag", tlikeflag);
-				System.out.println("tlikeflag: " + tlikeflag);
 			}
 		} 
+		model.addAttribute("usernum", usernum);
 		return selectByTnum(request, model, null);
 	}
 	
 	@RequestMapping("/clike")
-	public String clike(HttpServletRequest request, Model model, HttpSession session) {
+	public String clike(HttpServletRequest request, Model model) {
 		logger.info("HomeController 클래스의 clike() 메소드 실행");
 		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
 		
@@ -484,25 +481,18 @@ public class HomeController {
 		if (clikefirst == 0) {
 			mapper.insertCoLike(hmap);
 			mapper.clikeInsert(hmap);
-			int clikeflag = 1;
-			model.addAttribute("clikeflag", clikeflag);
 		} else if (clikefirst != 0) {
 			int clike = mapper.clike(hmap);
 			if (clike == 0) {
 				mapper.insertCoLike(hmap);
 				mapper.clikeUpdate(hmap);
-				int clikeflag = 1;
-				model.addAttribute("clikeflag", clikeflag);
 			} else if (clike > 0) {
 				mapper.deleteCoLike(hmap);
 				mapper.clikeDelete(hmap);
-				int clikeflag = 0;
-				model.addAttribute("clikeflag", clikeflag);
 			}
 		}
 		model.addAttribute("tnum", tnum);
-		session.setAttribute("usernum", usernum);
-		return selectByTnum(request, model, session);
+		return selectByTnum(request, model, null);
 	}
 	
 	@RequestMapping("/update")
