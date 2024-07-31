@@ -10,5 +10,5 @@ Mybatis로 활용한 DB 연동<br/>
 Bootstrap5를 이용한 JSP 뷰페이지 구성<br/>
 Javascript/Jquery/JSTL로 뷰페이지 제어<br/>
 
-맡은 역할: contentView Page 기능 구현
+맡은 역할: contentView Page 기능 구현<br/>
 주요 기능: 좋아요, 스크랩, aside(작성자가 추천한 글목록), 댓글 입력/삭제/수정 기능
