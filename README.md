@@ -1,4 +1,4 @@
-<b>TAG(Trend & Game) Team Project</b> 2024.06.03-2024.07.05<br/>
+<b>TAG(Trend & Game) Team Project</b>&nbsp; 2024.06.03-2024.07.05<br/>
 카테고리는 크게 트렌드와 미니게임<br/>
 Python 크롤링을 활용한 트렌드 데이터 수집, Pandas / Numpy 등을 활용한 데이터 정제<br/>
 Wordcloud / Seaborn / Matplotlib 등으로 시각화<br/>
