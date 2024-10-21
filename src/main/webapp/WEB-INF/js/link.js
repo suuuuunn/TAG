@@ -35,8 +35,9 @@ function morebtn() {
 }
 
 $(function() {
+	var middlePoint = ($(document).height() - $(window).height()) / 2;
     $(window).scroll(function() {
-        if ($(this).scrollTop() > 700) {
+        if ($(this).scrollTop() > middlePoint) {
             $('#toTop').fadeIn();            
         } else {
             $('#toTop').fadeOut();
@@ -51,7 +52,7 @@ $(function() {
     });
     
     $(window).scroll(function() {
-        if ($(this).scrollTop() < 700) {
+        if ($(this).scrollTop() < middlePoint) {
             $('#toDown').fadeIn();            
         } else {
             $('#toDown').fadeOut();

@@ -29,7 +29,13 @@ public interface MybatisDAO {
 	void insertComment(CommentVO co);
 
 	void deleteComment(int cnum);
-
+	
+	// 슬라이더&이미지버튼
+	int selectSlide(int tnum);
+	int selectImages(int tnum);
+	void insertSlide(int tnum);
+	void insertImages(int tnum);
+	
 	// 신고
 	int reportfirst(HashMap<String, Integer> hmap);
 	void insertTrendReport(HashMap<String, Integer> hmap);
@@ -93,6 +99,19 @@ public interface MybatisDAO {
 	int commentCnt(String nickname);
 
 	int scrapCnt(int usernum);
+
+
+
+	
+
+	
+
+	
+
+
+
+
+
 
 
 

@@ -52,6 +52,26 @@
 			) where rnum <= 5
 		]]>
 	</select>
+	
+	<!-- slide가 0인지 1인지 확인 -->
+	<select id="selectSlide" parameterType="int" resultType="int">
+		select slide from trend where tnum = #{tnum}
+	</select>
+
+	<!-- images가 0인지 1인지 확인 -->
+	<select id="selectImages" parameterType="int" resultType="int">
+		select images from trend where tnum = #{tnum}
+	</select>
+	
+	<!-- slide 버튼 눌렀을 때 -->
+	<update id="insertSlide" parameterType="int">
+		update trend set slide = 1, images = 0 where tnum = #{tnum}
+	</update>
+	
+	<!-- images 버튼 눌렀을 때 -->
+	<update id="insertImages" parameterType="int">
+		update trend set images = 1, slide = 0 where tnum = #{tnum}
+	</update>
 
 	<!-- 닉네임 변수 추가 -->
 	<insert id="insertComment" parameterType="co">

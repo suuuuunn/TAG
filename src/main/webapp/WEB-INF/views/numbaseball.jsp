@@ -10,10 +10,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <script type="text/javascript" src="./js/numbaseball.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="mt-5 container text-center">
-		<h3>숫자 야구 <i class="bi bi-dribbble" style="color: green;"></i></h3>
+	<div class="mt-5 container text-center" style="font-family: 'Poor Story', sans-serif;">
+		<h3><b>숫자 야구 <i class="bi bi-dribbble" style="color: green;"></i></b></h3>
 		<br />
 		<p>숫자만 일치하면 ball, 숫자와 자리까지 일치하면 strike!</p>
 		<p>랜덤한 숫자를 맞춰보세요! 기회는 단 10번입니다.</p>
@@ -23,7 +24,7 @@
         </div>
 		<br/><div id="gameContainer" class="container text-center algin-middle" style="display: none;">
 			<div>
-	            <input type="text" id="userInput" placeholder="level 자리 숫자를 입력하세요" maxlength=level>
+	            <input type="text" id="userInput" placeholder="level 자리 숫자를 입력하세요" maxlength=level style="width: 13%;">
 	            <button id="guessBtn" class="btn btn-danger btn-sm">Guess</button>
 			</div>           
      	</div>

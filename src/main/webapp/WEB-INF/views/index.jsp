@@ -523,8 +523,8 @@
 				data-bs-placement="top"
 				title="${trend.title}"
 				onclick="location.href='selectByTnum?tnum=${trend.tnum}'">
-				<span class="title title1" style="font-family: 'Sunflower', sans-serif;">${trend.title}</span><br/>
-				<span class="ttext ttext1" style="font-family: 'Sunflower', sans-serif;">${trend.maintext}</span>
+				<span class="title title1" style="font-family: 'Jua', sans-serif;">${trend.title}</span><br/>
+				<span class="ttext ttext1" style="font-family: 'Jua', sans-serif;">${trend.maintext}</span>
 			</div>
 		</c:forEach>
 		<c:forEach var="trend" items="${trendlist}" begin="17" end="17">
@@ -541,7 +541,7 @@
 				data-bs-placement="top"
 				title="${trend.title}"
 				onclick="location.href='selectByTnum?tnum=${trend.tnum}'">
-				<span class="title title2" style="font-family: 'Sunflower', sans-serif;">${trend.title}</span>
+				<span class="title title2" style="font-family: 'Jua', sans-serif;">${trend.title}</span>
 			</div>
 		</c:forEach>
 		<c:forEach var="trend" items="${trendlist}" begin="18" end="18">
@@ -558,7 +558,7 @@
 				data-bs-placement="top"
 				title="${trend.title}"
 				onclick="location.href='selectByTnum?tnum=${trend.tnum}'">
-				<span class="title title2" style="font-family: 'Sunflower', sans-serif;">${trend.title}</span>
+				<span class="title title2" style="font-family: 'Jua', sans-serif;">${trend.title}</span>
 			</div>
 		</c:forEach>
 		<c:forEach var="trend" items="${trendlist}" begin="19" end="19">
@@ -575,8 +575,8 @@
 				data-bs-placement="top"
 				title="${trend.title}"
 				onclick="location.href='selectByTnum?tnum=${trend.tnum}'">
-				<span class="title title1" style="font-family: 'Sunflower', sans-serif;">${trend.title}</span><br/>
-				<span class="ttext ttext1" style="font-family: 'Sunflower', sans-serif;">${trend.maintext}</span>
+				<span class="title title1" style="font-family: 'Jua', sans-serif;">${trend.title}</span><br/>
+				<span class="ttext ttext1" style="font-family: 'Jua', sans-serif;">${trend.maintext}</span>
 			</div>
 		</c:forEach>
 	</div>

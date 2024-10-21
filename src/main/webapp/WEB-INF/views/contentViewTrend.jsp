@@ -336,9 +336,15 @@
 			<div class="container px-2">
 				<fmt:formatDate var="tdate" value="${vo.tdate}" pattern="yy.MM.dd HH:mm:ss" />
 				<br /><h2 style="font-family: 'jua', sans-serif;">${vo.title}</h2><br />
-				<p style="font-family: 'Nanum Gothic', sans-serif;">${vo.tag}</p><br/>
+				<p style="font-family: 'Nanum Gothic', sans-serif;">${vo.tag}</p>
+				<p class="d-flex justify-content-end">
+					<button type="button" class="btn btn-outline-dark btn-sm" onclick="location.href='slide?tnum=${vo.tnum}&usernum=${vo.usernum}&slide=${slide}&images=${images}'"><i class="bi bi-card-heading"></i></button>&nbsp;
+					<button type="button" class="btn btn-outline-dark btn-sm" onclick="location.href='images?tnum=${vo.tnum}&usernum=${vo.usernum}&slide=${slide}&images=${images}'"><i class="bi bi-card-image"></i></button>
+				</p>
 				<!-- 이미지 -->
 				<!-- 이미지 저장할 때 맨 처음에 나오는 이미지는 '-'없이 숫자만 저장, 그 이후 이미지들은 '-' 붙여서 저장해야 잘 구현됨 -->
+				
+				<c:if test="${slide == 1}">
 				<%
 					String imagePath = application.getRealPath("/WEB-INF/images");
 					File imageDir = new File(imagePath);
@@ -366,80 +372,77 @@
 					}
 				%>
 				<!-- 슬라이드 -->
-				<div class="container text-center" style="width: 100%; height: 500px;">
-					<div id="trend" class="mx-3 carousel slide" data-bs-ride="carousel" style="width: 97%">
-						<div class="carousel-indicators">
-				  	  		<button type="button" data-bs-target="#trend" data-bs-slide-to="0" class="active" style="background-color: black;"></button>
-						  	<c:forEach var="i" begin="1" end="<%=imageFiles.size()%>">
-							  	<button type="button" data-bs-target="#trend" data-bs-slide-to="${i}" style="background-color: black;"></button>
-						  	</c:forEach>
-					  	</div>
-						<div class="carousel-inner text-center align-middle">
-							<div class="carousel-item active">
-								<img src="./images/<%= tnum %>.png" alt="<%= tnum %>" class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 480px;" />
+					<div class="container text-center" style="width: 100%; height: 500px;">
+						<div id="trend" class="mx-3 carousel slide" data-bs-ride="carousel" style="width: 97%">
+							<div class="carousel-indicators">
+					  	  		<button type="button" data-bs-target="#trend" data-bs-slide-to="0" class="active" style="background-color: black;"></button>
+							  	<c:forEach var="i" begin="1" end="<%=imageFiles.size()%>">
+								  	<button type="button" data-bs-target="#trend" data-bs-slide-to="${i}" style="background-color: black;"></button>
+							  	</c:forEach>
+						  	</div>
+							<div class="carousel-inner text-center align-middle">
+								<div class="carousel-item active">
+									<img src="./images/<%= tnum %>.png" alt="<%= tnum %>" class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 480px;" />
+								</div>
+								<%
+									for (String fileName : imageFiles) {
+										/* out.println("<p>filename: " + fileName + "</p>"); */
+								%>
+										<div class="carousel-item">
+											<img src="image?name=<%= fileName %>" alt="<%= fileName %>"  class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 480px;;"/><br/>
+										</div>
+								<%
+									}
+								%>
 							</div>
-							<%
-								for (String fileName : imageFiles) {
-									/* out.println("<p>filename: " + fileName + "</p>"); */
-							%>
-									<div class="carousel-item">
-										<img src="image?name=<%= fileName %>" alt="<%= fileName %>"  class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 500px;"/><br/>
-									</div>
-							<%
-								}
-							%>
+							<!-- 오른쪽/왼쪽 버튼 -->
+							<button class="carousel-control-prev" type="button" data-bs-target="#trend" data-bs-slide="prev" style="height: 500px;">
+								<span><i class="bi bi-chevron-left" style="color: black; font-size: 300%;"></i></span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#trend" data-bs-slide="next" style="height: 500px;">
+								<span><i class="bi bi-chevron-right" style="color: black; font-size: 300%;"></i></span>
+							</button>
 						</div>
-						<!-- 오른쪽/왼쪽 버튼 -->
-						<button class="carousel-control-prev" type="button" data-bs-target="#trend" data-bs-slide="prev" style="height: 500px;">
-							<span><i class="bi bi-chevron-left" style="color: black; font-size: 300%;"></i></span>
-						</button>
-						<button class="carousel-control-next" type="button" data-bs-target="#trend" data-bs-slide="next" style="height: 500px;">
-							<span><i class="bi bi-chevron-right" style="color: black; font-size: 300%;"></i></span>
-						</button>
 					</div>
-				</div>
+				</c:if>
 				<!-- 블로그 방식 -->
-				<%-- <% 
-					/* List<TrendVO> imageVOList = new ArrayList<>();
-			        imageVOList.add(new ImageVO("1"));
-			        imageVOList.add(new ImageVO("2"));
-			        imageVOList.add(new ImageVO("3")); */
-			        
-			        // TrendVO trendVO = new TrendVO;
-				
+				<c:if test="${images == 1}">
+				<% 
 					String imagePath = application.getRealPath("/WEB-INF/images");
-			        File imageDir = new File(imagePath);
-			        File[] files = imageDir.listFiles();
-			        List<String> imageFiles = new ArrayList<>();
-					
-			        if (files != null) {
-			        	// String tnum = vo.getTnum();
-			            for (File file : files) {
-			                if (file.isFile() && file.getName().startsWith("2")) {
-			                	// out.println(vo.tnum);
-			                    imageFiles.add(file.getName());
-			                }
-			            }
-			            /* 이미지 파일 정렬 */
-			            Collections.sort(imageFiles, new Comparator<String>() {
+					File imageDir = new File(imagePath);
+					File[] files = imageDir.listFiles();
+					List<String> imageFiles = new ArrayList<>();
+					TrendVO vo = (TrendVO) request.getAttribute("vo");
+					int tnum = vo.getTnum();
+					/* out.println("<p>tnum: " + tnum + "</p>"); */
+					if (files != null) {
+						for (File file : files) {
+							if (file.isFile() && file.getName().startsWith(tnum + "-")) {
+								/* out.println("<p>File found: " + file.getName() + "</p>"); */
+								imageFiles.add(file.getName());
+							}
+						}
+						/* 이미지 파일 정렬 */
+						Collections.sort(imageFiles, new Comparator<String>() {
 			                @Override
 			                public int compare(String o1, String o2) {
 			                    return Collator.getInstance().compare(o1, o2);
 			                }
 			            });
-			        } else {
-			            out.println("<p>No files found in the directory.</p>");
-			        }
+					} else {
+						out.println("<p>No files found in the directory.</p>");
+					}
 				%>
 				<%
 		            for (String fileName : imageFiles) {
 		        %>
-	             	   <img src="image?name=<%= fileName %>" alt="<%= fileName %>" style="width:80%;"/><br/>
+	             	   <img src="image?name=<%= fileName %>" alt="<%= fileName %>" style="width:75%;"/><br/>
 		        <%
 		            }
-		        %>  --%>
+		        %>
+				</c:if>
 
-				<br /><p style="font-family: 'Nanum Gothic', sans-serif;">${vo.maintext}</p><br />
+				<%-- <br /><p style="font-family: 'Nanum Gothic', sans-serif;">${vo.maintext}</p><br /> --%>
 				<br/>
 				<p class="d-flex justify-content-end" style="font-family: 'Nanum Gothic', sans-serif;">작성일: ${tdate}</p>
 				<p class="d-flex justify-content-end" style="font-family: 'Nanum Gothic', sans-serif;">작성자: ${vo.writer}</p>
@@ -447,7 +450,7 @@
 			
 			<!-- 좋아요, 스크랩, 공유, 목록보기 -->
 			<div class="container px-2 d-flex justify-content-center" style="font-size: 120%;">
-				<p>
+				<p id="more">
 					<!-- 로그인 되어있지 않은 경우 -->
 					<c:if test="<%=nickname == null %>">
 						<button class="btn" type="button" onclick="like();">

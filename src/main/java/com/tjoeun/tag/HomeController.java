@@ -264,6 +264,8 @@ public class HomeController {
 		TrendVO vo = mapper.selectByTnum(tnum);
 		int totalComment = mapper.selectCountComment(tnum);
 		int usernum;
+		int slide = mapper.selectSlide(tnum); 
+		int images = mapper.selectImages(tnum);
 		try {
 			usernum = (int) session.getAttribute("usernum");
 		} catch (Exception e) { 
@@ -299,7 +301,35 @@ public class HomeController {
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("trendList", trendList);
 		model.addAttribute("tlikeflag", tlikeflag);
+		model.addAttribute("slide", slide);
+		model.addAttribute("images", images);
 		return "contentViewTrend";
+	}
+	
+	@RequestMapping("/slide")
+	public String slide(HttpServletRequest request, Model model, HttpSession session) {
+		logger.info("HomeController 클래스의 slide() 메소드 실행");
+		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
+		int tnum = Integer.parseInt(request.getParameter("tnum"));
+		// int usernum = (int) session.getAttribute("usernum");
+		System.out.println("tnum: " + tnum);
+		mapper.insertSlide(tnum);
+		model.addAttribute("tnum", tnum);
+		// model.addAttribute("usernum", usernum);
+		return selectByTnum(request, model, null);
+	}
+	
+	@RequestMapping("/images")
+	public String images(HttpServletRequest request, Model model, HttpSession session) {
+		logger.info("HomeController 클래스의 images() 메소드 실행");
+		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
+		int tnum = Integer.parseInt(request.getParameter("tnum"));
+		System.out.println("tnum: " + tnum);
+		// int usernum = (int) session.getAttribute("usernum");
+		mapper.insertImages(tnum);
+		model.addAttribute("tnum", tnum);
+		// model.addAttribute("usernum", usernum);
+		return selectByTnum(request, model, null);
 	}
 	
 	// 닉네임 => 형빈이 추가 코딩으로 변경
@@ -396,7 +426,7 @@ public class HomeController {
 		String title = request.getParameter("title");
 		String writer = request.getParameter("writer");
 		int lnum = Integer.parseInt(request.getParameter("lnum"));
-		// System.out.println("tnum: " + tnum + ", lnum: " + lnum + ", title: " + title + ", writer: " + writer);
+		System.out.println("tnum: " + tnum + ", lnum: " + lnum + ", title: " + title + ", writer: " + writer);
 		HashMap<String, Integer> hmap = new HashMap<String, Integer>();
 		hmap.put("usernum", usernum);
 		hmap.put("tnum", tnum);
