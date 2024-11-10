@@ -59,11 +59,15 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="icon" href="./images/logo.jpg" type="image/x-icon">
-<script type="text/javascript" src="./js/link.js" defer="defer"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+<script type="text/javascript" src="./js/link.js" defer="defer"></script>
 <script type="text/javascript" src="./js/mainjs.js" defer="defer"></script>
 <script type="text/javascript" src="./js/Account.js" defer="defer"></script>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic&display=swap" rel="stylesheet">
+<!-- <script>
+  Kakao.init('c2868f26a91a5c604651779d3d809ca0'); // 사용하려는 앱의 JavaScript 키 입력
+</script> -->
 </head>
 <!-- 위로 아래로 버튼 -->
 <a id="toTop" class="position-fixed bottom-0 end-0 m-5" href="#" style="display: none;">
@@ -335,8 +339,8 @@
 		<div class="container px-4 px-lg-5">
 			<div class="container px-2">
 				<fmt:formatDate var="tdate" value="${vo.tdate}" pattern="yy.MM.dd HH:mm:ss" />
-				<br /><h2 style="font-family: 'jua', sans-serif;">${vo.title}</h2><br />
-				<p style="font-family: 'Nanum Gothic', sans-serif;">${vo.tag}</p>
+				<br /><h2 id="title" style="font-family: 'jua', sans-serif;">${vo.title}</h2><br />
+				<p id="tag" style="font-family: 'Nanum Gothic', sans-serif;">${vo.tag}</p>
 				<p class="d-flex justify-content-end">
 					<button type="button" class="btn btn-outline-dark btn-sm" onclick="location.href='slide?tnum=${vo.tnum}&usernum=${vo.usernum}&slide=${slide}&images=${images}'"><i class="bi bi-card-heading"></i></button>&nbsp;
 					<button type="button" class="btn btn-outline-dark btn-sm" onclick="location.href='images?tnum=${vo.tnum}&usernum=${vo.usernum}&slide=${slide}&images=${images}'"><i class="bi bi-card-image"></i></button>
@@ -345,33 +349,33 @@
 				<!-- 이미지 저장할 때 맨 처음에 나오는 이미지는 '-'없이 숫자만 저장, 그 이후 이미지들은 '-' 붙여서 저장해야 잘 구현됨 -->
 				
 				<c:if test="${slide == 1}">
-				<%
-					String imagePath = application.getRealPath("/WEB-INF/images");
-					File imageDir = new File(imagePath);
-					File[] files = imageDir.listFiles();
-					List<String> imageFiles = new ArrayList<>();
-					TrendVO vo = (TrendVO) request.getAttribute("vo");
-					int tnum = vo.getTnum();
-					/* out.println("<p>tnum: " + tnum + "</p>"); */
-					if (files != null) {
-						for (File file : files) {
-							if (file.isFile() && file.getName().startsWith(tnum + "-")) {
-								/* out.println("<p>File found: " + file.getName() + "</p>"); */
-								imageFiles.add(file.getName());
+					<%
+						String imagePath = application.getRealPath("/WEB-INF/images");
+						File imageDir = new File(imagePath);
+						File[] files = imageDir.listFiles();
+						List<String> imageFiles = new ArrayList<>();
+						TrendVO vo = (TrendVO) request.getAttribute("vo");
+						int tnum = vo.getTnum();
+						/* out.println("<p>tnum: " + tnum + "</p>"); */
+						if (files != null) {
+							for (File file : files) {
+								if (file.isFile() && file.getName().startsWith(tnum + "-")) {
+									/* out.println("<p>File found: " + file.getName() + "</p>"); */
+									imageFiles.add(file.getName());
+								}
 							}
+							/* 이미지 파일 정렬 */
+							Collections.sort(imageFiles, new Comparator<String>() {
+				                @Override
+				                public int compare(String o1, String o2) {
+				                    return Collator.getInstance().compare(o1, o2);
+				                }
+				            });
+						} else {
+							out.println("<p>No files found in the directory.</p>");
 						}
-						/* 이미지 파일 정렬 */
-						Collections.sort(imageFiles, new Comparator<String>() {
-			                @Override
-			                public int compare(String o1, String o2) {
-			                    return Collator.getInstance().compare(o1, o2);
-			                }
-			            });
-					} else {
-						out.println("<p>No files found in the directory.</p>");
-					}
-				%>
-				<!-- 슬라이드 -->
+					%>
+					<!-- 슬라이드 -->
 					<div class="container text-center" style="width: 100%; height: 500px;">
 						<div id="trend" class="mx-3 carousel slide" data-bs-ride="carousel" style="width: 97%">
 							<div class="carousel-indicators">
@@ -450,6 +454,7 @@
 			
 			<!-- 좋아요, 스크랩, 공유, 목록보기 -->
 			<div class="container px-2 d-flex justify-content-center" style="font-size: 120%;">
+				<p id="like" style="display: none;">${vo.lnum}</p>
 				<p id="more">
 					<!-- 로그인 되어있지 않은 경우 -->
 					<c:if test="<%=nickname == null %>">
@@ -468,7 +473,7 @@
 							</button>
 						</c:if>
 						<c:if test="${tlikeflag == 1}">
-							<button class="btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
+							<button class=btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
 								<i class="bi bi-heart-fill" style="color: red"></i>&nbsp;${vo.lnum}
 							</button>
 						</c:if>
@@ -493,6 +498,11 @@
 					<button class="btn" type="button" value="링크복사" onclick="clip(); return false;">
 						<i class="bi bi-share-fill"></i>&nbsp;
 					</button>
+					&nbsp;
+					<button id="kakaotalk-sharing-btn" type="button" class="btn" onclick="shareMessage();">
+						<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+   							 alt="카카오톡 공유 보내기 버튼" style="width: 40%;"/>
+   					</button>
 				</p>
 			</div>
 			<form class="container px-2 d-flex justify-content-end" method="post">
@@ -502,6 +512,7 @@
 			<!-- 댓글 -->
 			<div class="container px-2" style="font-family: 'Nanum Gothic', sans-serif;">
 				<br /><h2 class="d-flex justify-content-start" style="font-family: 'jua', sans-serif;">댓글(${commentList.totalComment})</h2><br />
+				<p id="comment" style="display: none;">${commentList.totalComment}</p>
 				<!-- 댓글 입력 -->
 				<form action="insertcommentOK" method="post" name="commentForm">
 					
@@ -578,7 +589,7 @@
 											</c:if>
 											<c:if test="${co.rnum < 11}">
 												<li class="list-group-item" style="background-color: #e7f6e5; border-radius: 6px;">
-													<c:set var="sessionNick" value="<%=nickname%>"/>
+													<c:set var="sessionNick" value="<%= nickname %>"/>
 													<div class="row mt-3">
 														<span class="col-sm-4 d-flex justify-content-first">
 															<span>${co.nickname}</span>&nbsp;&nbsp;
@@ -587,27 +598,27 @@
 														</span> 
 														<span class="col-sm-8 d-flex justify-content-end">
 															<!-- 로그인 되어있지 않을 경우 좋아요 -->
-															<c:if test="<%=nickname == null %>">
+															<c:if test="<%= nickname == null %>">
 																<button class="btn" type="button" onclick="like();">
 																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
 																</button>
 															</c:if>
 															<!-- 로그인 되어있을 경우 좋아요 -->
-															<c:if test="<%=nickname != null %>">
+															<c:if test="<%= nickname != null %>">
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
 																<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
 																</button>
-																<%-- <c:if test="${clikeflag == 1}">
+																<c:if test="${clikeflag == 1}">
 																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
 																	</button>
-																</c:if> --%>
+																</c:if>
 															</c:if>
 															<!-- 로그인 되어있는 경우에만 신고-->
-															<c:if test="<%=nickname != null %>">
+															<c:if test="<%= nickname != null %>">
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
@@ -645,7 +656,7 @@
 											</c:if>
 											<c:if test="${co.rnum < 11}">
 												<li class="trc list-group-item" style="display: none; background-color: #e7f6e5; border-radius: 6px;">
-													<c:set var="sessionNick" value="<%=nickname%>"/>
+													<c:set var="sessionNick" value="<%= nickname%>"/>
 													<div class="row mt-3">
 														<span class="col-sm-4 d-flex justify-content-first">
 															<span>${co.nickname}</span>&nbsp;&nbsp;
@@ -653,13 +664,13 @@
 														</span> 
 														<span class="col-sm-8 d-flex justify-content-end">
 															<!-- 로그인 되어있지 않을 경우 좋아요 -->
-															<c:if test="<%=nickname == null %>">
+															<c:if test="<%= nickname == null %>">
 																<button class="btn" type="button" onclick="like();">
 																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
 																</button>
 															</c:if>
 															<!-- 로그인 되어있을 경우 좋아요 -->
-															<c:if test="<%=nickname != null %>">
+															<c:if test="<%= nickname != null %>">
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
@@ -673,7 +684,7 @@
 																</c:if> --%>
 															</c:if>
 															<!-- 로그인 되어있는 경우에만 신고-->
-															<c:if test="<%=nickname != null %>">
+															<c:if test="<%= nickname != null %>">
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
@@ -686,7 +697,7 @@
 														<p class="d-flex justify-content-first">${memo}</p>
 														
 														<!-- 닉네임 일치시에만 댓글 수정 / 삭제 -->
-														<c:set var="sessionNick" value="<%=nickname%>"/>
+														<c:set var="sessionNick" value="<%= nickname%>"/>
 														<c:if test="${co.nickname == sessionNick}">
 															<p class="d-flex justify-content-end">
 																<span>

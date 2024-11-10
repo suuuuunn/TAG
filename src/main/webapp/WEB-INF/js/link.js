@@ -11,6 +11,81 @@ function clip() {
 	alert('URL이 복사되었습니다.')
 }
 
+function shareMessage() {
+	if (!Kakao.isInitialized()) {
+	    Kakao.init('c2868f26a91a5c604651779d3d809ca0');
+	}
+	console.log(Kakao.isInitialized());
+	
+	// 현재 링크
+	var currentURL = window.location.href;
+	console.log("currentURL: " + currentURL);
+	
+	// 제품 타이틀
+	var productTitleElement = document.getElementById('title').textContent;
+	var productTitle = productTitleElement ? productTitleElement : '';
+	console.log("productTitleElement: " + productTitleElement);
+	console.log("productTitle: " + productTitle);
+	
+	// 제품 설명
+	var productSummaryElement = document.getElementById('tag').textContent;
+    var productSummary = productSummaryElement ? productSummaryElement : '';
+	console.log("productSummaryElement: " + productSummaryElement);
+	console.log("productSummary: " + productSummary);
+        
+    // 제품 이미지
+    var productImageElement = document.querySelector('.carousel-item img').getAttribute('src');
+	var productImageUrl = '';
+	if (productImageElement === './images/60.png') {
+        productImageUrl = 'https://ifh.cc/g/2P4dOC.jpg';
+    } else if (productImageElement === './images/59.png') {
+        productImageUrl = 'https://ifh.cc/g/JSaoxR.png';
+    } else if (productImageElement === './images/58.png') {
+        productImageUrl = 'https://ifh.cc/g/fh2YPv.png';
+    } else if (productImageElement === './images/57.png') {
+        productImageUrl = 'https://ifh.cc/g/LPHMYk.png';
+    }
+	console.log("productImageElement: " + productImageElement);
+	console.log("productImageUrl: " + productImageUrl);
+
+	var likeElement = document.getElementById('like').textContent;
+	var productLike = likeElement ? Number(likeElement) : 0;
+	console.log("likeElement: " + likeElement);
+	console.log("productLike: " + productLike);
+	
+	var commentElement = document.getElementById('comment').textContent;
+	var productComment = commentElement ? Number(commentElement) : 0;
+	console.log("commentElement: " + commentElement);
+	console.log("productComment: " + productComment);
+	
+    Kakao.Share.createDefaultButton({
+    container: '#kakaotalk-sharing-btn',
+    objectType: 'feed',
+    content: {
+      title: productTitle,
+      description: productSummary,
+      imageUrl: productImageUrl,
+      link: {
+        mobileWebUrl: currentURL,
+        webUrl: currentURL,
+      },
+    },
+    social: {
+      likeCount: productLike,
+      commentCount: productComment,
+    },
+    buttons: [
+      {
+        title: '웹으로 보기',
+        link: {
+          mobileWebUrl: currentURL,
+          webUrl: currentURL,
+        },
+      },
+    ],
+    });
+}
+
 function like() {
 	alert('로그인 후 이용해주세요.');
 }
