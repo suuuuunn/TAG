@@ -271,16 +271,26 @@ public class HomeController {
 		} catch (Exception e) { 
 			usernum = 0;
 		}
-		int tlikeflag = 0;
-		HashMap<String, Integer> hmap3 = new HashMap<String, Integer>();
-		hmap3.put("tnum", tnum);
-		hmap3.put("usernum", usernum);
+		// 게시글 & 댓글 하트 flag
+		int tlikeflag = 0; int clikeflag = 0; int clikeCnum = 0;
 		try {
 			tlikeflag = (int) model.getAttribute("tlikeflag");
 			System.out.println("tlikeflag: " + tlikeflag);
 		} catch (Exception e) {
-			tlikeflag = 0;
+			tlikeflag = 0; 
 		}
+		try {
+			clikeflag = (int) model.getAttribute("clikeflag");
+			clikeCnum = (int) model.getAttribute("clikeCnum");
+			System.out.println("clikeflag: " + clikeflag);
+			System.out.println("clikeCnum: " + clikeCnum);
+		} catch (Exception e) {
+			clikeflag = 0; clikeCnum = 0;
+		}
+			
+//		HashMap<String, Integer> hmap3 = new HashMap<String, Integer>();
+//		hmap3.put("tnum", tnum);
+//		hmap3.put("usernum", usernum);
 		
 		// 댓글 리스트
 		CommentList commentList = new CommentList(totalComment, totalComment, 1);
@@ -301,6 +311,8 @@ public class HomeController {
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("trendList", trendList);
 		model.addAttribute("tlikeflag", tlikeflag);
+		model.addAttribute("clikeflag", clikeflag);
+		model.addAttribute("clikeCnum", clikeCnum);
 		model.addAttribute("slide", slide);
 		model.addAttribute("images", images);
 		return "contentViewTrend";
@@ -311,11 +323,9 @@ public class HomeController {
 		logger.info("HomeController 클래스의 slide() 메소드 실행");
 		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
 		int tnum = Integer.parseInt(request.getParameter("tnum"));
-		// int usernum = (int) session.getAttribute("usernum");
 		System.out.println("tnum: " + tnum);
 		mapper.insertSlide(tnum);
 		model.addAttribute("tnum", tnum);
-		// model.addAttribute("usernum", usernum);
 		return selectByTnum(request, model, null);
 	}
 	
@@ -325,20 +335,16 @@ public class HomeController {
 		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
 		int tnum = Integer.parseInt(request.getParameter("tnum"));
 		System.out.println("tnum: " + tnum);
-		// int usernum = (int) session.getAttribute("usernum");
 		mapper.insertImages(tnum);
 		model.addAttribute("tnum", tnum);
-		// model.addAttribute("usernum", usernum);
 		return selectByTnum(request, model, null);
 	}
 	
-	// 닉네임 => 형빈이 추가 코딩으로 변경
 	@RequestMapping("/insertcommentOK")
 	public String insertcommentOK(HttpServletRequest request, Model model, CommentVO co, HttpSession session) {
 		logger.info("HomeController 클래스의 insertcommentOK() 메소드 실행");
 		MybatisDAO mapper = sqlSession.getMapper(MybatisDAO.class);
 		String check_memo = request.getParameter("memo");
-		// String nickname = request.getParameter("nickname");
 
 		String nickname = (String) session.getAttribute("nickname");
 		int usernum = (int) session.getAttribute("usernum");
@@ -436,7 +442,7 @@ public class HomeController {
 			mapper.scrapInsert(param);
 			request.setAttribute("msg", "스크랩완료");
 			return "alert";
-		} else if (scrapfirst != 0) {
+		} else {
 			int scrap = mapper.scrap(hmap);
 			if (scrap == 0) {
 				mapper.scrapUpdate(hmap);
@@ -508,20 +514,30 @@ public class HomeController {
 		System.out.println("usernum:" + usernum);
 		int clikefirst = mapper.clikefirst(hmap);
 		System.out.println("clikefirst: " + clikefirst);
+		int clikeflag = 0;
+		int clikeCnum = cnum;
 		if (clikefirst == 0) {
 			mapper.insertCoLike(hmap);
 			mapper.clikeInsert(hmap);
-		} else if (clikefirst != 0) {
+			clikeflag = mapper.clike(hmap);
+		} else if (clikefirst != 0){
 			int clike = mapper.clike(hmap);
+			System.out.println("clike: " + clike);
 			if (clike == 0) {
 				mapper.insertCoLike(hmap);
 				mapper.clikeUpdate(hmap);
+				clikeflag = mapper.clike(hmap);
 			} else if (clike > 0) {
 				mapper.deleteCoLike(hmap);
 				mapper.clikeDelete(hmap);
+				clikeflag = mapper.clike(hmap);
+				System.out.println("clikeflag-first: " + clikeflag);
 			}
 		}
+		model.addAttribute("clikeflag", clikeflag);
+		model.addAttribute("clikeCnum", clikeCnum);
 		model.addAttribute("tnum", tnum);
+		model.addAttribute("usernum", usernum);
 		return selectByTnum(request, model, null);
 	}
 	
@@ -736,8 +752,8 @@ public class HomeController {
 		if (session.getAttribute("nickname") != null)
 		{
 			List<CommentVO> vo = sqlSession.selectList("com.tjoeun.tag.dao.MybatisDAO.MyScrap",session.getAttribute("usernum"));
-			System.out.println("vo: " + vo);
-			model.addAttribute("vo",vo);
+			// System.out.println("vo: " + vo);
+			model.addAttribute("vo", vo);
 			return "Scrap";
 		}
 		else

@@ -86,7 +86,7 @@
 	
 	<!-- 신고 처음인지 확인 -->
 	<select id="reportfirst" parameterType="java.util.HashMap" resultType="int">
-		select count(report) from mypage where usernum = #{usernum} and cnum = #{cnum}
+		select count(rflag) from report where usernum = #{usernum} and cnum = #{cnum}
 	</select>
 	
 	<!-- 댓글 신고 -->
@@ -94,57 +94,55 @@
 		update tcomment set rnum = #{rnum} + 1 where cnum = #{cnum}
 	</update>
 	
-	<!-- report insert -->
 	<insert id="reportInsert" parameterType="java.util.HashMap">
-		insert into mypage (idx, usernum, cnum, report)
-		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{cnum}, 1)
-	</insert>
+		insert into report (idx, usernum, cnum, rflag)
+		values ((select nvl(max(idx), 0) + 1 from report), #{usernum}, #{cnum}, 1)
+	</insert> 
 	
 	<!-- 이전에 신고 눌렀는지 확인 -->
 	<select id="report" parameterType="java.util.HashMap" resultType="int">
-		select report from mypage where usernum = #{usernum} and cnum = #{cnum}
+		select rflag from report where usernum = #{usernum} and cnum = #{cnum}
 	</select>
 	
 	<!-- report update -->
 	<update id="reportUpdate" parameterType="java.util.HashMap">
-		update mypage set report = 1 where usernum = #{usernum} and cnum = #{cnum}
+		update report set rlfag = 1 where usernum = #{usernum} and cnum = #{cnum}
 	</update>
 	
 	<!-- 스크랩 처음인지 확인 -->
 	<select id="scrapfirst" parameterType="java.util.HashMap" resultType="int">
-		select count(scrap) from mypage where usernum = #{usernum} and tnum = #{tnum}
+		select count(sflag) from scrap where usernum = #{usernum} and tnum = #{tnum}
 	</select>
 	
 	<!-- scrap insert -->
 	<insert id="scrapInsert" parameterType="com.tjoeun.tag.vo.Param">
-		<!-- insert into scrap (snum, tnum) values ((select nvl(max(snum), 0) + 1 from scrap), #{tnum}) -->
-		insert into mypage (idx, tnum, lnum, usernum, title, scrap, writer) 
-		values ((select nvl(max(idx), 0) + 1 from mypage), #{tnum}, #{lnum}, #{usernum}, #{title}, 1, #{writer})
+		insert into scrap (idx, tnum, usernum, sflag, lnum, title, writer) 
+		values ((select nvl(max(idx), 0) + 1 from scrap), #{tnum}, #{usernum}, 1, #{lnum}, #{title}, #{writer})
 	</insert>
 	
 	<!-- 이전에 스크랩 눌렀는지 확인 -->
 	<select id="scrap" parameterType="java.util.HashMap" resultType="int">
-		select scrap from mypage where usernum = #{usernum} and tnum = #{tnum}
+		select sflag from scrap where usernum = #{usernum} and tnum = #{tnum}
 	</select>
 	
 	<!-- scrap update -->
 	<update id="scrapUpdate" parameterType="java.util.HashMap">
-		update mypage set scrap = 1 where tnum = #{tnum} and usernum = #{usernum}
+		update scrap set sflag = 1 where tnum = #{tnum} and usernum = #{usernum}
 	</update>
 	
 	<!-- scrap delete -->
 	<update id="scrapDelete" parameterType="java.util.HashMap">
-		update mypage set scrap = 0 where tnum = #{tnum} and usernum = #{usernum}
+		update scrap set sflag = 0 where tnum = #{tnum} and usernum = #{usernum}
 	</update>
 	
 	<!-- 좋아요 처음인지 확인 -->
 	<select id="tlikefirst" parameterType="java.util.HashMap" resultType="int">
-		select count(tlike) from mypage where usernum = #{usernum} and tnum = #{tnum}
+		select count(tflag) from trendlike where usernum = #{usernum} and tnum = #{tnum}
 	</select>
 	
 	<!-- 이전에 좋아요를 눌렀는지 확인 -->
 	<select id="tlike" parameterType="java.util.HashMap" resultType="int">
-		select tlike from mypage where usernum = #{usernum} and tnum = #{tnum}
+		select tflag from trendlike where usernum = #{usernum} and tnum = #{tnum}
 	</select>
 
 	<!-- 트렌드 좋아요수 -->
@@ -154,13 +152,13 @@
 	
 	<!-- tlike insert -->
 	<insert id="tilkeInsert" parameterType="java.util.HashMap">
-		insert into mypage (idx, usernum, tnum, tlike, lnum)
-		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{tnum}, 1, #{lnum} + 1)
+		insert into trendlike (idx, tnum, usernum, tflag)
+		values ((select nvl(max(idx), 0) + 1 from trendlike), #{tnum}, #{usernum}, 1)
 	</insert>
 	
 	<!-- tlike update -->
 	<update id="tlikeUpdate" parameterType="java.util.HashMap">
-		update mypage set tlike = 1, lnum = #{lnum} + 1 where usernum = #{usernum} and tnum = #{tnum}
+		update trendlike set tflag = 1 where usernum = #{usernum} and tnum = #{tnum}
 	</update>
 	
 	<!-- 트렌드 좋아요 삭제 -->
@@ -170,12 +168,12 @@
 		
 	<!-- tlike delete -->
 	<update id="tlikeDelete" parameterType="java.util.HashMap">
-		update mypage set tlike = 0, lnum = #{lnum} - 1 where usernum = #{usernum} and tnum = #{tnum}
+		update trendlike set tflag = 0 where usernum = #{usernum} and tnum = #{tnum}
 	</update>
 	
 	<!-- 댓글 좋아요 처음인지 확인 -->
 	<select id="clikefirst" parameterType="java.util.HashMap" resultType="int">
-		select count(clike) from mypage where usernum = #{usernum} and cnum = #{cnum}
+		select count(cflag) from commentlike where usernum = #{usernum} and cnum = #{cnum}
 	</select>
 	
 	<!-- 댓글 좋아요수 증가 -->
@@ -185,18 +183,18 @@
 	
 	<!-- 댓글 좋아요 insert -->
 	<insert id="clikeInsert" parameterType="java.util.HashMap">
-		insert into mypage (idx, usernum, cnum, clike)
-		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{cnum}, 1)
+		insert into commentlike (idx, cnum, usernum, cflag)
+		values ((select nvl(max(idx), 0) + 1 from commentlike), #{cnum}, #{usernum}, 1)
 	</insert>
 	
 	<!-- 이전에 댓글 좋아요 눌렀는지 확인 -->
 	<select id="clike" parameterType="java.util.HashMap" resultType="int">
-		select clike from mypage where cnum = #{cnum} and #{usernum} = #{usernum}
+		select cflag from commentlike where cnum = #{cnum} and #{usernum} = #{usernum}
 	</select>
 	
 	<!-- clike update -->
 	<update id="clikeUpdate" parameterType="java.util.HashMap">
-		update mypage set clike = 1 where usernum = #{usernum} and cnum = #{cnum}
+		update commentlike set cflag = 1 where usernum = #{usernum} and cnum = #{cnum}
 	</update>
 	
 	<!-- 댓글 좋아요수 삭제 -->
@@ -206,7 +204,7 @@
 	
 	<!-- clike delete -->
 	<update id="clikeDelete" parameterType="java.util.HashMap">
-		update mypage set clike = 0 where usernum = #{usernum} and cnum = #{cnum}
+		update commentlike set cflag = 0 where usernum = #{usernum} and cnum = #{cnum}
 	</update>
 	
 	<!-- 댓글 수정페이지 -->
@@ -288,12 +286,13 @@
 	</select>
 
 	<select id="MyScrap" parameterType="java.lang.Integer" resultType="vo">
-		select * from MYPAGE where USERNUM=#{usernum} and SCRAP=1
+		select * from scrap where USERNUM=#{usernum} and sflag=1
 	</select>
 
 	<select id="scrapCnt" parameterType="java.lang.Integer" resultType="int">
-		select count(*) from MYPAGE where USERNUM=#{usernum} and SCRAP=1
+		select count(*) from scrap where USERNUM=#{usernum} and sflag=1
 	</select>
+	
 </mapper>
 
 

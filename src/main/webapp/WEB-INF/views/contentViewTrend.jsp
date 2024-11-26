@@ -337,6 +337,32 @@
 	<!-- 콘텐츠 바디 부분 -->
 	<main class="container text-center pt-1">
 		<div class="container px-4 px-lg-5">
+		<%
+			String imagePath = application.getRealPath("/WEB-INF/images");
+			File imageDir = new File(imagePath);
+			File[] files = imageDir.listFiles();
+			List<String> imageFiles = new ArrayList<>();
+			TrendVO vo = (TrendVO) request.getAttribute("vo");
+			int tnum = vo.getTnum();
+			/* out.println("<p>tnum: " + tnum + "</p>"); */
+			if (files != null) {
+				for (File file : files) {
+					if (file.isFile() && file.getName().startsWith(tnum + "-")) {
+						/* out.println("<p>File found: " + file.getName() + "</p>"); */
+						imageFiles.add(file.getName());
+					}
+				}
+				/* 이미지 파일 정렬 */
+				Collections.sort(imageFiles, new Comparator<String>() {
+	                @Override
+	                public int compare(String o1, String o2) {
+	                    return Collator.getInstance().compare(o1, o2);
+	                }
+	            });
+			} else {
+				out.println("<p>No files found in the directory.</p>");
+			}
+		%>
 			<div class="container px-2">
 				<fmt:formatDate var="tdate" value="${vo.tdate}" pattern="yy.MM.dd HH:mm:ss" />
 				<br /><h2 id="title" style="font-family: 'jua', sans-serif;">${vo.title}</h2><br />
@@ -349,32 +375,6 @@
 				<!-- 이미지 저장할 때 맨 처음에 나오는 이미지는 '-'없이 숫자만 저장, 그 이후 이미지들은 '-' 붙여서 저장해야 잘 구현됨 -->
 				
 				<c:if test="${slide == 1}">
-					<%
-						String imagePath = application.getRealPath("/WEB-INF/images");
-						File imageDir = new File(imagePath);
-						File[] files = imageDir.listFiles();
-						List<String> imageFiles = new ArrayList<>();
-						TrendVO vo = (TrendVO) request.getAttribute("vo");
-						int tnum = vo.getTnum();
-						/* out.println("<p>tnum: " + tnum + "</p>"); */
-						if (files != null) {
-							for (File file : files) {
-								if (file.isFile() && file.getName().startsWith(tnum + "-")) {
-									/* out.println("<p>File found: " + file.getName() + "</p>"); */
-									imageFiles.add(file.getName());
-								}
-							}
-							/* 이미지 파일 정렬 */
-							Collections.sort(imageFiles, new Comparator<String>() {
-				                @Override
-				                public int compare(String o1, String o2) {
-				                    return Collator.getInstance().compare(o1, o2);
-				                }
-				            });
-						} else {
-							out.println("<p>No files found in the directory.</p>");
-						}
-					%>
 					<!-- 슬라이드 -->
 					<div class="container text-center" style="width: 100%; height: 500px;">
 						<div id="trend" class="mx-3 carousel slide" data-bs-ride="carousel" style="width: 97%">
@@ -411,32 +411,7 @@
 				</c:if>
 				<!-- 블로그 방식 -->
 				<c:if test="${images == 1}">
-				<% 
-					String imagePath = application.getRealPath("/WEB-INF/images");
-					File imageDir = new File(imagePath);
-					File[] files = imageDir.listFiles();
-					List<String> imageFiles = new ArrayList<>();
-					TrendVO vo = (TrendVO) request.getAttribute("vo");
-					int tnum = vo.getTnum();
-					/* out.println("<p>tnum: " + tnum + "</p>"); */
-					if (files != null) {
-						for (File file : files) {
-							if (file.isFile() && file.getName().startsWith(tnum + "-")) {
-								/* out.println("<p>File found: " + file.getName() + "</p>"); */
-								imageFiles.add(file.getName());
-							}
-						}
-						/* 이미지 파일 정렬 */
-						Collections.sort(imageFiles, new Comparator<String>() {
-			                @Override
-			                public int compare(String o1, String o2) {
-			                    return Collator.getInstance().compare(o1, o2);
-			                }
-			            });
-					} else {
-						out.println("<p>No files found in the directory.</p>");
-					}
-				%>
+					<img src="./images/<%= tnum %>.png" alt="<%= tnum %>" style="width:75%;"/><br/>
 				<%
 		            for (String fileName : imageFiles) {
 		        %>
@@ -473,7 +448,7 @@
 							</button>
 						</c:if>
 						<c:if test="${tlikeflag == 1}">
-							<button class=btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
+							<button class="btn" type="button" onclick="location.href='tlike?tnum=${vo.tnum}&lnum=${vo.lnum}&usernum=${usernum}'">
 								<i class="bi bi-heart-fill" style="color: red"></i>&nbsp;${vo.lnum}
 							</button>
 						</c:if>
@@ -581,13 +556,13 @@
 										<fmt:formatDate var="cdate" value="${co.cdate}" pattern="yy.MM.dd HH:mm:ss" />
 										<c:if test="${view.index < 5}">
 											<!-- 신고 10 이상이면 안보이게 -->
-											<c:if test="${co.rnum > 10}">
+											<c:if test="${co.rnum >= 10}">
 												<li class="list-group-item" style="background-color: #e7f6e5; border-radius: 6px;">
 													<br/><p>신고에 의해 삭제된 댓글입니다.</p><br/>
 													<p>${co.cnum}</p>
 												</li>
 											</c:if>
-											<c:if test="${co.rnum < 11}">
+											<c:if test="${co.rnum < 10}">
 												<li class="list-group-item" style="background-color: #e7f6e5; border-radius: 6px;">
 													<c:set var="sessionNick" value="<%= nickname %>"/>
 													<div class="row mt-3">
@@ -608,10 +583,18 @@
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
-																<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
-																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
-																</button>
-																<c:if test="${clikeflag == 1}">
+																<c:if test="${clikeflag == 0 || co.cnum != clikeCnum}">
+																	<%-- <button class="flag btn" type="button" onclick="likeon(this);" data-cnum="${co.cnum}" data-lcnum="${co.lcnum}" data-usernum="${usernum}" data-tnum="${vo.tnum}" data-clikeflag="${clikeflag}">
+																		<i class="bi bi-heart like-icon" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button> --%>
+																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																		<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button>
+																</c:if>
+																<c:if test="${clikeflag == 1 && co.cnum == clikeCnum}">
+																	<%-- <button class="flag btn" type="button" onclick="likeon(this);" data-cnum="${co.cnum}" data-lcnum="${co.lcnum}" data-usernum="${usernum}" data-tnum="${vo.tnum}">
+																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button> --%>
 																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
 																	</button>
@@ -649,12 +632,12 @@
 										</c:if>
 										<c:if test="${view.index >= 5}">
 											<!-- 신고 10 이상이면 안보이게 -->
-											<c:if test="${co.rnum > 10}">
+											<c:if test="${co.rnum >= 10}">
 												<li class="trc list-group-item" style="display: none; background-color: #e7f6e5; border-radius: 6px;">
 													<br/><p>신고에 의해 삭제된 댓글입니다.</p>
 												</li>
 											</c:if>
-											<c:if test="${co.rnum < 11}">
+											<c:if test="${co.rnum < 10}">
 												<li class="trc list-group-item" style="display: none; background-color: #e7f6e5; border-radius: 6px;">
 													<c:set var="sessionNick" value="<%= nickname%>"/>
 													<div class="row mt-3">
@@ -674,14 +657,22 @@
 																<%
 																	int usernum = (int) session.getAttribute("usernum");
 																%>
-																<button class="btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
-																	<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
-																</button>
-																<%-- <c:if test="${clikeflag == 1}">
-																	<button class="btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																<c:if test="${clikeflag == 0 || co.cnum != clikeCnum}">
+																	<%-- <button class="flag btn" type="button" onclick="likeon(this);" data-cnum="${co.cnum}" data-lcnum="${co.lcnum}" data-usernum="${usernum}" data-tnum="${vo.tnum}" data-clikeflag="${clikeflag}">
+																		<i class="bi bi-heart like-icon" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button> --%>
+																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
+																		<i class="bi bi-heart" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button>
+																</c:if>
+																<c:if test="${clikeflag == 1 && co.cnum == clikeCnum}">
+																	<%-- <button class="flag btn" type="button" onclick="likeon(this);" data-cnum="${co.cnum}" data-lcnum="${co.lcnum}" data-usernum="${usernum}" data-tnum="${vo.tnum}">
+																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
+																	</button> --%>
+																	<button class="flag btn" type="button" onclick="location.href='clike?cnum=${co.cnum}&lcnum=${co.lcnum}&usernum=${usernum}&tnum=${vo.tnum}'">
 																		<i class="bi bi-heart-fill" style="color: red;"></i>&nbsp;${co.lcnum}
 																	</button>
-																</c:if> --%>
+																</c:if>
 															</c:if>
 															<!-- 로그인 되어있는 경우에만 신고-->
 															<c:if test="<%= nickname != null %>">

@@ -40,7 +40,7 @@
 	<!-- Mybatis 설정: DB연결정보 / sql명령이 저장된 xml 파일 경로 설정 / typeAlias 설정 정보가 저장된 xml 파일 경로 설정 -->
 	<beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/>
-		<beans:property name="mapperLocations" value="classpath:com/tjoeun/tag/dao/*.xml"/>
+		<beans:property name="mapperLocations" value="classpath:com/tjoeun/tag/dao/tag.xml"/>
 		<beans:property name="configLocation" value="classpath:mybatis-config.xml"/>
 	</beans:bean>
 		

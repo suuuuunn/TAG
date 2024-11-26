@@ -26,8 +26,8 @@
 	<img class="logo" alt="logo" src="./images/tag_logo1.png" onclick="location.href='index'" style="max-height: 80px;">
 	
 	<div style="display: flex; justify-content: center; flex-grow: 1;">
-		<button type="button" class="btn btn-outline-dark" style="width: 35%;" onclick="location.href='list'"><i class="bi bi-list">Trend</i></button>
 		<button type="button" class="btn btn-outline-dark" style="width: 35%;" onclick="location.href='index'"><i class="bi bi-house"> Index</i></button>
+		<button type="button" class="btn btn-outline-dark" style="width: 35%;" onclick="location.href='list'"><i class="bi bi-list">Trend</i></button>
 	</div>
 	
 	<div id="searchbox" style="display: none;">

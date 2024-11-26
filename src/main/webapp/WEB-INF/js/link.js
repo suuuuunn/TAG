@@ -90,6 +90,45 @@ function like() {
 	alert('로그인 후 이용해주세요.');
 }
 
+function likeon(button) {
+	// 새로고침 방지
+	event.preventDefault();
+	
+	const cnum = button.dataset.cnum;
+    const lcnum = button.dataset.lcnum;
+    const usernum = button.dataset.usernum;
+    const tnum = button.dataset.tnum;
+    let clikeflag = button.dataset.clikeflag;
+	console.log("cnum: " + cnum + ", lcnum: " + lcnum + ", usernum: " + usernum + ", tnum: " + tnum + ", clikeflag: " + clikeflag);
+
+	clikeflag = clikeflag === 0 ? 1 : 0;
+
+	const url = `clike?cnum=${cnum}&lcnum=${lcnum}&usernum=${usernum}&tnum=${tnum}&clikeflag=${clikeflag}`;
+	console.log("Reporting with URL:", url);
+	
+	fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            console.log('Response:', data);
+            // 좋아요 상태 업데이트
+            button.dataset.clikeflag = clikeflag;
+            updateLikeButton(button, clikeflag);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateLikeButton(button, clikeflag) {
+    const heartIcon = button.querySelector('.like-icon');  // 아이콘 (하트)
+    
+    if (clikeflag == 1) {
+        heartIcon.classList.remove('bi-heart');   // 비어있는 하트 제거
+        heartIcon.classList.add('bi-heart-fill'); // 채워진 하트 추가
+    } else {
+        heartIcon.classList.remove('bi-heart-fill'); // 채워진 하트 제거
+        heartIcon.classList.add('bi-heart');         // 비어있는 하트 추가
+    }
+}
+
 function morebtn() {
 	let last = $('#last').val()
 	last = parseInt(last)

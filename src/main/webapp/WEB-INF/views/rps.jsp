@@ -61,6 +61,7 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script type="text/javascript" src="./js/mainjs.js" defer="defer"></script>
 <script type="text/javascript" src="./js/rps.js" defer="defer"></script>
+<link rel="stylesheet" href="./css/list2.css" />
 </head>
 
 <body>

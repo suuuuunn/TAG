@@ -88,14 +88,14 @@
             <div data-mdb-input-init class="form-outline mb-4">
                 <div class="d-flex align-items-center justify-content-center"
                      style="width: 100%; height: 100%; max-height: 5rem; border-radius: 0.5rem; background-color: #eae2e2;">
-							<span class="loginInfo" style="height:70px; align-content: center">
-								<%-- 수정 - 닉네임 부분을 세션으로 변경 --%>
-								<%
-                                    out.println("<strong>"+nickname+"</strong>");
-                                    out.println("<br>");
-                                    out.println("ⓟ "+point);
-                                %>
-							</span><br/>
+						<span class="loginInfo" style="height:70px; align-content: center">
+							<%-- 수정 - 닉네임 부분을 세션으로 변경 --%>
+							<%
+                                   out.println("<strong>"+nickname+"</strong>");
+                                   out.println("<br>");
+                                   out.println("ⓟ "+point);
+                               %>
+						</span><br/>
                 </div>
             </div>
             <div data-mdb-input-init class="form-outline mb-4">
